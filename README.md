@@ -18,7 +18,7 @@ referência, cada divergência sinalizada na margem.
 | Etapa | O que treina |
 |---|---|
 | **Calibração** | 12 pistas isoladas, uma por vez: a qual dos cinco grupos da NR-5 pertence cada uma. Inclui as confusões características — perfurocortante é Grupo 5, não 3; controle de produtividade é Grupo 4; umidade é Grupo 1; iluminação inadequada é Grupo 5. |
-| **Determinações** | Os 15 setores, um a um, sobre a planta baixa. O aluno marca os grupos presentes e gradua a intensidade de cada um. Ao liberar o resultado, recebe o gabarito comentado daquele setor. |
+| **Determinações** | Os 15 setores, um a um, sobre a planta baixa. O aluno marca os grupos presentes e gradua a intensidade de cada um. Em cinco setores há a percepção de risco de quem trabalha ali — registrá-la é atribuição da CIPA, e a fala vale como pista: ela revela risco que o nome do setor esconde e desmente marcação que não se sustenta. Ao liberar o resultado, recebe o gabarito comentado daquele setor. |
 | **Observações** | Cinco achados que não estão na lista numerada de setores, misturados a três distratores. |
 | **Liberação** | O mapa que o aluno desenhou, sobre a planta, ao lado do de referência. Diagnóstico do padrão de erro e protocolo de conclusão. |
 
