@@ -75,6 +75,7 @@ fraude.
 | `index.html` | O jogo inteiro. Autossuficiente: a planta baixa viaja embutida, não há dependência externa nem build. Abre por duplo clique, por e-mail ou em qualquer servidor estático. |
 | `planta.jpg` | A planta baixa original, mantida como fonte. O jogo não a carrega — já está dentro do HTML. |
 | `serve.py` | Servidor local de pré-visualização. Só existe porque o `http.server` padrão não declara charset e os acentos quebram. |
+| `.claude/launch.json` | Aponta o `serve.py` na porta 8731, para a pré-visualização subir pelo mesmo caminho em qualquer máquina. |
 | `PRODUCT.md` · `DESIGN.md` | Registro das decisões de produto e do mundo visual. |
 
 ## Rodar localmente
