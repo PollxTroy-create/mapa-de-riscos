@@ -154,7 +154,7 @@ h2.doc{font-size:var(--t7);font-weight:900;letter-spacing:-.035em;margin:38px 0 
 /* ---------- escala ---------- */
 .scale-row{display:flex;align-items:flex-end;gap:30px;padding:22px 0 6px}
 .scale-row figure{margin:0;text-align:center}
-.scale-row .ring{border:1.5px solid var(--ink-3);border-radius:50%;margin:0 auto 9px}
+.scale-row .ring{display:block;border:1.5px solid var(--ink-3);border-radius:50%;margin:0 auto 9px}
 .scale-row figcaption{font-family:var(--f-mac);font-size:var(--t1);color:var(--ink-3);letter-spacing:.05em}
 .defs{border-top:1px solid var(--rule)}
 .defs > div{display:grid;grid-template-columns:112px 1fr;gap:18px;padding:10px 0;border-bottom:1px solid var(--rule)}
@@ -450,7 +450,7 @@ dialog.full .dh h4{font-size:var(--t3);margin-right:auto}
           <figure><span class="ring" style="width:30px;height:30px"></span><figcaption>M · 2×</figcaption></figure>
           <figure><span class="ring" style="width:60px;height:60px"></span><figcaption>G · 4×</figcaption></figure>
         </div>
-        <p class="prose" style="font-size:var(--t2);margin-top:14px">Riscos simultâneos no mesmo ponto dividem o círculo em partes iguais, uma por grupo.</p>
+        <p class="prose" style="font-size:var(--t2);margin-top:14px">Riscos simultâneos no mesmo ponto dividem o círculo em partes iguais, uma por grupo — no máximo quatro. Graus diferentes no mesmo ambiente não cabem no mesmo círculo: cada grau ganha o seu, no tamanho que lhe corresponde.</p>
       </div>
       <div>
         <span class="field">Critério de graduação</span>
@@ -692,7 +692,7 @@ const F1 = [
    why:"Vapor de substância química: <strong>Grupo 2</strong>. O formaldeído é classificado pela IARC como carcinogênico para humanos (Grupo 1) e é sensibilizante respiratório — por isso exige exaustão e monitoramento."},
   {q:"Aerossóis gerados na baciloscopia para tuberculose", a:"bio", s:"Setor 12 — Microbiologia",
    why:"<strong>Grupo 3</strong>. O <em>M. tuberculosis</em> tem transmissão aérea: o aerossol é o veículo, o bacilo é o agente. É o maior risco biológico deste laboratório."},
-  {q:"Controle rigoroso de produtividade sobre quem triaga as amostras", a:"erg", s:"Setor 4 — Triagem de amostras",
+  {q:"Controle rigoroso de produtividade sobre quem tria as amostras", a:"erg", s:"Setor 4 — Triagem de amostras",
    why:"Parece gestão, é norma: <strong>“controle rígido de produtividade”</strong> está escrito no Grupo 4 da NR-5, ao lado de ritmo excessivo, monotonia e repetitividade. Organização do trabalho é risco ergonômico."},
   {q:"Agulha usada na punção venosa", a:"aci", s:"Setor 3 — Salas de coleta",
    why:"O erro mais comum da turma. O perfurocortante é <strong>Grupo 5 (acidentes)</strong> — o ferimento. O patógeno que entra pelo ferimento é Grupo 3. Na sala de coleta os dois círculos coexistem; marcar só um descreve metade do risco."},
@@ -1015,12 +1015,26 @@ function pie(cx, cy, d, keys, labelled){
   }
   return out;
 }
-const circleOf = pick => {
-  const gs = GK.filter(k => pick && pick[k]);
-  if(!gs.length) return null;
-  const big = gs.reduce((m,k) => Math.max(m, LV[pick[k]]), 0);
-  return {keys:gs, d:DIAM[["P","M","G"][big]], lvl:["P","M","G"][big]};
+/* Um círculo por grau: proporções diferentes exigem diâmetros diferentes.
+   E acima de 4 riscos no mesmo grau o excedente vai para outro círculo do
+   mesmo tamanho — fatia fina demais deixa de representar o risco. */
+const circlesOf = pick => {
+  const out = [];
+  ["G","M","P"].forEach(lv => {
+    const gs = GK.filter(k => pick && pick[k] === lv);
+    for(let i = 0; i < gs.length; i += 4) out.push({keys:gs.slice(i,i+4), d:DIAM[lv], lvl:lv});
+  });
+  return out;
 };
+/* O conjunto de círculos do setor, lado a lado e centrado na âncora. */
+function pieSet(cx, cy, circles, labelled, k){
+  k = k || 1;
+  const gap = 5*k, ds = circles.map(c => c.d*k);
+  const total = ds.reduce((a,b) => a+b, 0) + gap*(ds.length-1);
+  let x = cx - total/2, out = "";
+  circles.forEach((c,i) => { out += pie(x + ds[i]/2, cy, ds[i], c.keys, labelled); x += ds[i] + gap; });
+  return out;
+}
 const refPick = sec => { const p = {}; for(const g in sec.chave) p[g] = sec.chave[g].nivel; return p; };
 
 function planLayer(curSec, pick){
@@ -1031,12 +1045,12 @@ function planLayer(curSec, pick){
   }
   S.forEach(o => {
     if(curSec && o.id === curSec.id) return;
-    const c = circleOf(st.det.ans[o.id]);
-    if(c) s += `<g opacity=".3">${pie(o.anchor[0], o.anchor[1], c.d, c.keys, false)}</g>`;
+    const cs = circlesOf(st.det.ans[o.id]);
+    if(cs.length) s += `<g opacity=".3">${pieSet(o.anchor[0], o.anchor[1], cs, false)}</g>`;
   });
   if(curSec){
-    const c = circleOf(pick);
-    if(c) s += pie(curSec.anchor[0], curSec.anchor[1], c.d, c.keys, true);
+    const cs = circlesOf(pick);
+    if(cs.length) s += pieSet(curSec.anchor[0], curSec.anchor[1], cs, true);
   }
   return s;
 }
@@ -1271,19 +1285,24 @@ function refresh(sec){
 }
 
 function paintMeter(sec, pick, done){
-  const c = circleOf(pick);
+  const cs = circlesOf(pick);
   const svg = $("an-circ");
-  if(!c){
+  if(!cs.length){
     svg.innerHTML = `<circle cx="44" cy="44" r="17" fill="none" stroke="var(--rule-2)" stroke-width="1.3" stroke-dasharray="3 4"/>`;
     $("an-rd1").textContent = done ? "Nenhum risco registrado" : "Nenhum risco marcado";
     $("an-rd2").textContent = done ? "setor sem círculo no mapa" : "o círculo se monta conforme você marca";
     return;
   }
-  const scale = 68/DIAM.G;
-  svg.innerHTML = pie(44, 44, c.d*scale*1.6, c.keys, true);
-  const names = c.keys.map(k => G[k].n).join(" · ");
-  $("an-rd1").textContent = names;
-  $("an-rd2").textContent = `grau ${LVN[c.lvl]} · diâmetro ${["1×","2×","4×"][LV[c.lvl]]} · ${c.keys.length} ${c.keys.length===1?"setor":"partes"} no círculo`;
+  /* escala fixa — o grau tem de continuar visível no tamanho —, reduzida
+     só o quanto baste para o conjunto caber na moldura de 88. */
+  const ds = cs.map(c => c.d);
+  const w = ds.reduce((a,b) => a+b, 0) + 5*(ds.length-1);
+  svg.innerHTML = pieSet(44, 44, cs, true, Math.min(76/DIAM.G, 76/w));
+  const keys = cs.reduce((a,c) => a.concat(c.keys), []);
+  $("an-rd1").textContent = keys.map(k => G[k].n).join(" · ");
+  $("an-rd2").textContent = cs.length === 1
+    ? `grau ${LVN[cs[0].lvl]} · diâmetro ${["1×","2×","4×"][LV[cs[0].lvl]]} · ${cs[0].keys.length} ${cs[0].keys.length===1?"setor":"partes"} no círculo`
+    : `${cs.length} círculos · ` + cs.map(c => `${LVN[c.lvl]} (${c.keys.length})`).join(" + ");
 }
 
 $("an-go").addEventListener("click", () => {
@@ -1442,10 +1461,10 @@ function dotset(pick, ghost){
 function drawFinal(){
   let s = "";
   S.forEach(sec => {
-    const mine = circleOf(st.det.ans[sec.id]), ref = circleOf(refPick(sec));
+    const mine = circlesOf(st.det.ans[sec.id]), ref = circlesOf(refPick(sec));
     const [x,y] = sec.anchor;
-    if(mapMode === "meu" && mine) s += pie(x, y, mine.d, mine.keys, true);
-    if(mapMode === "ref" && ref)  s += pie(x, y, ref.d, ref.keys, true);
+    if(mapMode === "meu" && mine.length) s += pieSet(x, y, mine, true);
+    if(mapMode === "ref" && ref.length)  s += pieSet(x, y, ref, true);
     if(mapMode === "dif"){
       const r = scoreSector(sec, st.det.ans[sec.id] || {});
       if(r.absent || r.excess){
