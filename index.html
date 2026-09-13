@@ -85,6 +85,12 @@ a{color:inherit;text-underline-offset:3px;text-decoration-thickness:1px}
   display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:10px 0 9px;
 }
 .masthead .mh-id{margin-right:auto;min-width:0}
+.mh-meters{display:flex;align-items:center;gap:15px;margin-left:auto}
+@media(max-width:560px){
+  .masthead{gap:6px}
+  .masthead .mh-id{width:100%;margin-right:0}
+  .mh-meters{width:100%;margin-left:0;justify-content:space-between}
+}
 .masthead h1{font-size:var(--t3);font-weight:900;letter-spacing:-.01em;line-height:1.2}
 .masthead .mh-sub{font-family:var(--f-mac);font-size:var(--t1);color:var(--ink-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .gauge{display:flex;align-items:baseline;gap:6px}
@@ -400,8 +406,10 @@ dialog.full .dh h4{font-size:var(--t3);margin-right:auto}
     <h1>Laudo de Vistoria de Riscos</h1>
     <div class="mh-sub" id="mh-sub">Laboratório de Análises Clínicas · NR-5</div>
   </div>
-  <div class="streak" id="streak" title="Corrida em controle"></div>
-  <div class="gauge"><span class="g-v" id="gauge-v">—</span><span class="g-l">conform.</span></div>
+  <div class="mh-meters">
+    <div class="streak" id="streak" title="Corrida em controle"></div>
+    <div class="gauge"><span class="g-v" id="gauge-v">—</span><span class="g-l">conform.</span></div>
+  </div>
 </header>
 
 <nav class="phases" id="phases"></nav>
