@@ -247,6 +247,10 @@ figcaption.cap{
 
 .brief{font-family:var(--f-hum);font-size:var(--t4);line-height:1.6;color:var(--ink-2);padding:16px 0 20px;border-bottom:1px solid var(--rule)}
 .brief em{font-style:normal;color:var(--ink);font-weight:500;background:var(--paper-3);padding:.06em .28em;margin:0 -.04em;border-radius:2px;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+.relato{margin:18px 0 2px;padding:1px 0 1px 15px;border-left:2px solid var(--rule-2)}
+.relato .field{display:block;margin-bottom:9px}
+.relato blockquote{font-family:var(--f-hum);font-style:italic;font-size:var(--t4);line-height:1.58;color:var(--ink);margin:0}
+.relato cite{font-family:var(--f-mac);font-style:normal;font-size:var(--t1);letter-spacing:.04em;color:var(--ink-3);display:block;margin-top:10px}
 
 .sec-lbl{display:flex;align-items:baseline;gap:10px;padding:20px 0 9px}
 .sec-lbl .field{flex:none}
@@ -492,7 +496,7 @@ dialog.full .dh h4{font-size:var(--t3);margin-right:auto}
         <span class="field">Roteiro</span>
         <dl class="defs" style="margin-top:10px">
           <div><dt>Calibração</dt><dd>12 amostras-controle. A qual grupo pertence cada pista?</dd></div>
-          <div><dt>Determinações</dt><dd>Os 15 setores, um a um, sobre a planta.</dd></div>
+          <div><dt>Determinações</dt><dd>Os 15 setores, um a um, sobre a planta. Em cinco deles há a percepção de risco de quem trabalha ali — registrá-la é atribuição da CIPA, e ela vale como pista.</dd></div>
           <div><dt>Observações</dt><dd>O que a lista de setores deixou de fora.</dd></div>
           <div><dt>Liberação</dt><dd>Seu mapa, o de referência, e o protocolo.</dd></div>
         </dl>
@@ -549,6 +553,11 @@ dialog.full .dh h4{font-size:var(--t3);margin-right:auto}
       </div>
 
       <p class="brief" id="an-brief"></p>
+      <aside class="relato" id="an-relato" style="display:none">
+        <span class="field">Percepção de risco registrada</span>
+        <blockquote id="an-relato-fala"></blockquote>
+        <cite id="an-relato-quem"></cite>
+      </aside>
 
       <div class="sec-lbl">
         <span class="field">Resultado</span>
@@ -772,6 +781,9 @@ const S = [
 
 {id:5, nome:"Imunofluorescência", who:"1 profissional de nível superior", anchor:[508,66], box:[450,8,548,90],
  brief:'Montagem e leitura de lâminas em microscópio de fluorescência, em sala escurecida.',
+ relato:{quem:"profissional de nível superior do setor",
+  fala:"Fico três horas seguidas no escuro lendo lâmina. A troca da lâmpada do microscópio é comigo quando ela queima, e ninguém nunca me disse se precisa de alguma proteção pra isso. Quando está acesa a gente só não olha direto.",
+  eco:"O relato não nomeia nenhum grupo de risco — descreve uma lâmpada e uma jornada. A lâmpada UV do microscópio de fluorescência é o <strong>risco físico</strong> que o nome do setor esconde, e três horas seguidas no escuro lendo lâmina é o <strong>ergonômico</strong>. A percepção do trabalhador entra no mapa como pista, nunca como classificação pronta."},
  chave:{fis:{nivel:"M", pq:"Radiação não ionizante — a lâmpada UV do microscópio de fluorescência. É o risco que quase ninguém marca: o nome da sala sugere biologia, a pista está no equipamento."},
         bio:{nivel:"M", pq:"Soros e amostras clínicas manipulados na montagem das lâminas."},
         erg:{nivel:"M", pq:"Leitura prolongada ao microscópio em ambiente escurecido: postura estática, fadiga visual e esforço de acomodação."}},
@@ -797,6 +809,9 @@ const S = [
 
 {id:8, nome:"Lavagem de materiais", who:"2 auxiliares de serviços gerais (com o setor 9)", anchor:[815,120], box:[728,8,892,150],
  brief:'Recebe todo o material contaminado do laboratório. O trabalho é feito <em>sem auxílio de lavadoras automatizadas</em>.',
+ relato:{quem:"auxiliar de serviços gerais, setores 8 e 9",
+  fala:"Meu sapato está molhado desde a hora que eu chego. O avental encharca, o chão nunca seca e no fim do dia a mão fica branca de tanto ficar de molho. Escovar tudo à mão é o dia inteiro — a gente reveza porque o braço não aguenta.",
+  eco:"Umidade é item expresso do Grupo 1 e é o risco mais esquecido pela turma — mas ninguém que trabalha aqui esqueceria. Ela foi dita três vezes na mesma frase: sapato, avental, chão. E escovar tudo à mão o dia inteiro é o <strong>Grupo 4</strong> sem usar a palavra ergonomia. Os dois trabalhadores de menor qualificação formal da equipe são os que carregam os cinco grupos."},
  chave:{erg:{nivel:"G", pq:"Sem lavadoras automatizadas, toda a carga é manual: esforço físico, postura em pé prolongada e movimento repetitivo por toda a jornada."},
         bio:{nivel:"G", pq:"Tudo o que foi contaminado no laboratório passa por aqui antes da esterilização. A escovação gera respingo e aerossol sobre quem lava."},
         qui:{nivel:"M", pq:"Detergentes enzimáticos, hipoclorito e soluções ácidas de descontaminação, manipulados sem sistema fechado."},
@@ -808,6 +823,9 @@ const S = [
 
 {id:9, nome:"Sala de esterilização", who:"os mesmos auxiliares do setor 8", anchor:[942,60], box:[896,8,992,152],
  brief:'Possui um <em>autoclave comum</em> e uma <em>esterilizadora por formaldeído</em>.',
+ relato:{quem:"auxiliar de serviços gerais, setores 8 e 9",
+  fala:"Quando abro a esterilizadora o cheiro toma a sala inteira e a garganta arde. A gente abre a porta, sai e espera um pouco antes de voltar. Exaustor aqui não tem — o jeito é esse mesmo.",
+  eco:"<em>Exaustor aqui não tem</em> não vira círculo nenhum no mapa: a ausência de controle não é um agente. Mas é exatamente ela que separa <strong>médio</strong> de <strong>grande</strong> — o critério de graduação desta disciplina inclui o controle ausente. Com exaustão local funcionando, o formaldeído seria um risco químico controlado; sem ela, e com sintoma relatado a cada abertura, é grande."},
  chave:{qui:{nivel:"G", pq:"Formaldeído: carcinogênico para humanos (IARC Grupo 1) e sensibilizante respiratório. É o maior risco químico do laboratório e exige exaustão local, monitoramento e procedimento de aeração."},
         fis:{nivel:"G", pq:"Calor e vapor do autoclave, com exposição a cada ciclo — carga, descarga e eventual abertura antecipada."},
         aci:{nivel:"M", pq:"Queimadura no manuseio da carga quente e vaso sob pressão, com risco de explosão se a manutenção falhar."}},
@@ -825,6 +843,9 @@ const S = [
 
 {id:11, nome:"Hematologia", who:"1 técnico", anchor:[790,512], box:[748,372,840,552],
  brief:'Cerca de <em>300 leituras de lâminas diariamente</em>. Automação presente, mas <em>sem esteira de carreamento de amostras</em>.',
+ relato:{quem:"técnico do setor",
+  fala:"O aparelho faz um zumbido, mas a gente nem escuta mais, é baixinho. O que me acaba é a vista — trezentas lâminas por dia. E como não tem esteira, sou eu que levo e trago a amostra entre a bancada e o aparelho, o dia inteiro.",
+  eco:"Este relato <strong>retira</strong> uma marcação em vez de acrescentar. <em>Faz um zumbido, mas é baixinho</em> é percepção de ruído não relevante — e percepção é justamente o que a NR-5 manda a CIPA registrar. Marcar risco físico aqui seria o raciocínio <em>tem equipamento, logo tem risco físico</em>, contra o que disse quem opera o equipamento o dia inteiro."},
  chave:{erg:{nivel:"G", pq:"300 leituras ao microscópio por dia, somadas ao carregamento manual das amostras: postura estática, fadiga visual, repetitividade e ritmo imposto pelo volume. Dois indicadores no mesmo setor."},
         bio:{nivel:"G", pq:"Sangue total em tubo aberto, com aerossol na homogeneização e na abertura."}},
  aceitavel:{qui:{nivel:"M", pq:"Corantes de May-Grünwald e Giemsa contêm metanol; some-se os reagentes do analisador."},
@@ -859,6 +880,9 @@ const S = [
 
 {id:15, nome:"Sala da coordenação", who:"1 responsável técnico", anchor:[218,408], box:[162,362,272,552],
  brief:'Revisão e liberação dos resultados pelo responsável técnico.',
+ relato:{quem:"responsável técnico",
+  fala:"Risco aqui dentro? Material biológico não sobe pra esta sala, reagente nenhum. O que pesa é liberar quatrocentos laudos por dia com prazo em cima e assinar por todos eles.",
+  eco:"Quem trabalha na sala diz que não há material biológico nem reagente — e diz qual é a carga real: responsabilidade técnica sob prazo, que é exigência organizacional e entra no <strong>Grupo 4</strong>. Percepção de risco também serve para <strong>não</strong> marcar. Um setor com um único círculo médio é um resultado correto."},
  chave:{erg:{nivel:"M", pq:"Postura sentada, trabalho em tela e jornada prolongada, somados à carga mental de liberar cerca de 400 laudos por dia sob prazo — a responsabilidade técnica é ela própria uma exigência organizacional."}},
  aceitavel:{},
  nao:{bio:"Nenhum material biológico chega a esta sala: o que circula aqui é laudo.",
@@ -1189,6 +1213,11 @@ function renderDet(){
   $("an-nm").textContent = sec.nome;
   $("an-who").textContent = sec.who;
   $("an-brief").innerHTML = sec.brief;
+  $("an-relato").style.display = sec.relato ? "" : "none";
+  if(sec.relato){
+    $("an-relato-fala").textContent = "“" + sec.relato.fala + "”";
+    $("an-relato-quem").textContent = "— " + sec.relato.quem;
+  }
   $("an-cap").textContent = `Figura · setor ${pad(sec.id)} em determinação`;
   $("an-prev").disabled = idx === 0;
 
@@ -1279,6 +1308,13 @@ function renderRows(sec, done){
   }).join("");
 
   if(done){
+    if(sec.relato){
+      const li = document.createElement("li");
+      li.innerHTML = `<div class="note" style="padding-top:16px;padding-left:calc(var(--marg) + 12px)">
+        <span class="tag ok">Percepção registrada</span>
+        <p class="prose" style="color:var(--ink)">${sec.relato.eco}</p></div>`;
+      $("an-det").appendChild(li);
+    }
     if(sec.destaque){
       const li = document.createElement("li");
       li.innerHTML = `<div class="note" style="padding-top:16px;padding-left:calc(var(--marg) + 12px)">
